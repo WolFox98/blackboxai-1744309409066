@@ -1,45 +1,44 @@
 @echo off
-echo SlimeVR Anti-Drift Installer
-echo ===========================
+echo SlimeVR Anti-Drift System Installer
+echo ================================
 echo.
 
-:: Verifica se SlimeVR è installato
-if exist "C:\Program Files\SlimeVR" (
-    set SLIMEVR_PATH="C:\Program Files\SlimeVR"
-) else if exist "C:\SlimeVR" (
-    set SLIMEVR_PATH="C:\SlimeVR"
-) else (
-    echo Non riesco a trovare l'installazione di SlimeVR.
-    echo Per favore, specifica il percorso di installazione di SlimeVR:
-    set /p SLIMEVR_PATH=
+:: Verifica se Python è installato
+python --version > nul 2>&1
+if errorlevel 1 (
+    echo Python non trovato! Per favore installa Python 3.x da python.org
+    echo.
+    pause
+    exit /b 1
 )
 
-echo.
-echo Installazione in corso in %SLIMEVR_PATH%...
+:: Installa le dipendenze necessarie
+echo Installazione delle dipendenze...
+pip install python-osc flask
+if errorlevel 1 (
+    echo Errore durante l'installazione delle dipendenze!
+    pause
+    exit /b 1
+)
+echo Dipendenze installate con successo!
 echo.
 
-:: Crea le cartelle necessarie
-mkdir "%SLIMEVR_PATH%\anti-drift"
-mkdir "%SLIMEVR_PATH%\anti-drift\src"
-mkdir "%SLIMEVR_PATH%\web"
+:: Crea lo script di avvio
+echo @echo off > run_anti_drift.bat
+echo python src/main.py >> run_anti_drift.bat
+echo pause >> run_anti_drift.bat
 
-:: Copia i file
-copy "src\AntiDriftAlgorithm.h" "%SLIMEVR_PATH%\anti-drift\src\"
-copy "src\AntiDriftAlgorithm.cpp" "%SLIMEVR_PATH%\anti-drift\src\"
-copy "src\calibration.cpp" "%SLIMEVR_PATH%\anti-drift\src\"
-copy "ui\advancedSettings.html" "%SLIMEVR_PATH%\web\"
-
-:: Avvia un server Python per l'interfaccia web
-echo.
-echo Avvio del server web per l'interfaccia di configurazione...
-start cmd /k "cd %SLIMEVR_PATH%\web && python -m http.server 9003"
-
-echo.
 echo Installazione completata!
 echo.
-echo Per utilizzare le nuove funzionalità:
+echo Per utilizzare il sistema:
 echo 1. Assicurati che SlimeVR sia in esecuzione
-echo 2. Apri nel browser: http://localhost:9003/advancedSettings.html
+echo 2. Esegui run_anti_drift.bat
+echo 3. Configura owoTracker con l'IP che verrà mostrato
+echo 4. Apri http://localhost:9003 nel browser
 echo.
-echo Premi un tasto per chiudere...
-pause >nul
+echo Avvio del programma...
+echo.
+
+:: Esegui il programma
+python src/main.py
+pause
