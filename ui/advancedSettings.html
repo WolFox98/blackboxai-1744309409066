@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>SlimeVR Anti-Drift Settings</title>
+    <style>
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <!-- Header -->
+            <div class="flex items-center space-x-3 mb-6 pb-4 border-b">
+                <i class="fas fa-cog text-blue-500 text-3xl"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Anti-Drift Settings</h1>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r">
+                <p class="text-blue-700">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    These settings help optimize the drift correction algorithm. Adjust them if you experience tracking issues.
+                </p>
+            </div>
+
+            <form id="settingsForm" class="space-y-6">
+                <!-- Drift Threshold -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Drift Threshold
+                        <span class="text-sm text-gray-500 ml-2">(Default: 5.0)</span>
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="range" id="driftThreshold" 
+                               min="1" max="10" step="0.1" value="5.0"
+                               class="flex-1">
+                        <span id="driftThresholdValue" class="w-12 text-gray-600 text-right">5.0</span>
+                    </div>
+                    <p class="text-sm text-gray-500">Higher values mean less sensitive drift detection</p>
+                </div>
+
+                <!-- Filter Coefficient -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Filter Coefficient
+                        <span class="text-sm text-gray-500 ml-2">(Default: 0.85)</span>
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="range" id="filterCoefficient" 
+                               min="0" max="1" step="0.01" value="0.85"
+                               class="flex-1">
+                        <span id="filterCoefficientValue" class="w-12 text-gray-600 text-right">0.85</span>
+                    </div>
+                    <p class="text-sm text-gray-500">Higher values mean smoother but slower corrections</p>
+                </div>
+
+                <!-- Calibration Section -->
+                <div class="pt-6 border-t">
+                    <h2 class="flex items-center text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-sync-alt text-green-500 mr-2"></i>
+                        Calibration
+                    </h2>
+                    <button type="button" id="calibrateBtn" 
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-play"></i>
+                        <span>Start Calibration</span>
+                    </button>
+                </div>
+
+                <!-- Save Button -->
+                <div class="pt-6 border-t">
+                    <button type="submit" 
+                            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-save"></i>
+                        <span>Save Settings</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Status Message -->
+            <div id="statusMessage" class="hidden mt-4 p-4 rounded-lg"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update value displays for sliders
+        document.getElementById('driftThreshold').addEventListener('input', (e) => {
+            document.getElementById('driftThresholdValue').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        document.getElementById('filterCoefficient').addEventListener('input', (e) => {
+            document.getElementById('filterCoefficientValue').textContent = parseFloat(e.target.value).toFixed(2);
+        });
+
+        // Form submission
+        document.getElementById('settingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const statusMsg = document.getElementById('statusMessage');
+            
+            // Get values
+            const driftThreshold = document.getElementById('driftThreshold').value;
+            const filterCoefficient = document.getElementById('filterCoefficient').value;
+
+            // Show success message
+            statusMsg.textContent = `Settings saved successfully!`;
+            statusMsg.className = 'mt-4 p-4 rounded-lg bg-green-100 text-green-700';
+            statusMsg.style.display = 'block';
+
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                statusMsg.style.display = 'none';
+            }, 3000);
+        });
+
+        // Calibration button
+        document.getElementById('calibrateBtn').addEventListener('click', () => {
+            const btn = document.getElementById('calibrateBtn');
+            const icon = btn.querySelector('i');
+            const span = btn.querySelector('span');
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+            icon.className = 'fas fa-spinner fa-spin';
+            span.textContent = 'Calibrating...';
+
+            // Simulate calibration process
+            setTimeout(() => {
+                icon.className = 'fas fa-check';
+                span.textContent = 'Calibration Complete';
+                btn.classList.remove('opacity-75');
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    icon.className = 'fas fa-play';
+                    span.textContent = 'Start Calibration';
+                }, 2000);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
