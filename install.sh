@@ -45,13 +45,17 @@ cp ui/advancedSettings.html "$SLIMEVR_PATH/web/"
 chmod 644 "$SLIMEVR_PATH/anti-drift/src/"*
 chmod 644 "$SLIMEVR_PATH/web/advancedSettings.html"
 
+# Avvia un server Python per l'interfaccia web
+echo
+echo "Avvio del server web per l'interfaccia di configurazione..."
+python3 -m http.server 9003 --directory "$SLIMEVR_PATH/web" &
+
 echo
 echo "Installazione completata!"
 echo
 echo "Per utilizzare le nuove funzionalità:"
-echo "1. Riavvia SlimeVR"
-echo "2. Apri nel browser: http://localhost:8080/web/advancedSettings.html"
-echo "3. Usa l'interfaccia per calibrare e regolare le impostazioni"
+echo "1. Assicurati che SlimeVR sia in esecuzione"
+echo "2. Apri nel browser: http://localhost:9003/advancedSettings.html"
 echo
 echo "Premi Invio per chiudere..."
 read -r
