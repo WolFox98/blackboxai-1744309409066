@@ -27,13 +27,11 @@
 <body class="bg-gray-50 min-h-screen py-8">
     <div class="container mx-auto px-4 max-w-2xl">
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <!-- Header -->
             <div class="flex items-center space-x-3 mb-6 pb-4 border-b">
                 <i class="fas fa-cog text-blue-500 text-3xl"></i>
                 <h1 class="text-2xl font-bold text-gray-800">Anti-Drift Settings</h1>
             </div>
 
-            <!-- Info Box -->
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r">
                 <p class="text-blue-700">
                     <i class="fas fa-info-circle mr-2"></i>
@@ -42,7 +40,6 @@
             </div>
 
             <form id="settingsForm" class="space-y-6">
-                <!-- Drift Threshold -->
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">
                         Drift Threshold
@@ -57,7 +54,6 @@
                     <p class="text-sm text-gray-500">Higher values mean less sensitive drift detection</p>
                 </div>
 
-                <!-- Filter Coefficient -->
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">
                         Filter Coefficient
@@ -72,7 +68,6 @@
                     <p class="text-sm text-gray-500">Higher values mean smoother but slower corrections</p>
                 </div>
 
-                <!-- Calibration Section -->
                 <div class="pt-6 border-t">
                     <h2 class="flex items-center text-lg font-semibold text-gray-800 mb-4">
                         <i class="fas fa-sync-alt text-green-500 mr-2"></i>
@@ -85,7 +80,6 @@
                     </button>
                 </div>
 
-                <!-- Save Button -->
                 <div class="pt-6 border-t">
                     <button type="submit" 
                             class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
@@ -95,7 +89,6 @@
                 </div>
             </form>
 
-            <!-- Status Message -->
             <div id="statusMessage" class="hidden mt-4 p-4 rounded-lg"></div>
         </div>
     </div>
