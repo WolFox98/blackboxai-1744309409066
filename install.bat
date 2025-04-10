@@ -29,13 +29,17 @@ copy "src\AntiDriftAlgorithm.cpp" "%SLIMEVR_PATH%\anti-drift\src\"
 copy "src\calibration.cpp" "%SLIMEVR_PATH%\anti-drift\src\"
 copy "ui\advancedSettings.html" "%SLIMEVR_PATH%\web\"
 
+:: Avvia un server Python per l'interfaccia web
+echo.
+echo Avvio del server web per l'interfaccia di configurazione...
+start cmd /k "cd %SLIMEVR_PATH%\web && python -m http.server 9003"
+
 echo.
 echo Installazione completata!
 echo.
 echo Per utilizzare le nuove funzionalità:
-echo 1. Riavvia SlimeVR
-echo 2. Apri nel browser: http://localhost:8080/web/advancedSettings.html
-echo 3. Usa l'interfaccia per calibrare e regolare le impostazioni
+echo 1. Assicurati che SlimeVR sia in esecuzione
+echo 2. Apri nel browser: http://localhost:9003/advancedSettings.html
 echo.
 echo Premi un tasto per chiudere...
 pause >nul
