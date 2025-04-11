@@ -4,8 +4,6 @@ import mediapipe as mp
 from pythonosc import udp_client
 import threading
 import logging
-import tkinter as tk
-from tkinter import ttk
 
 class CameraTracker:
     def __init__(self):
@@ -142,48 +140,35 @@ class CameraTracker:
                     tracker_data['rotation']
                 )
 
-def select_camera():
-    """Mostra una finestra per selezionare la webcam"""
-    root = tk.Tk()
-    root.title("Seleziona Webcam")
-    
-    selected_camera = tk.IntVar(value=0)
+def get_available_cameras():
+    """Trova tutte le webcam disponibili"""
+    available_cameras = []
     
     def test_camera(cam_id):
         cap = cv2.VideoCapture(cam_id)
         if cap.isOpened():
             ret, frame = cap.read()
+            if ret:
+                # Ottieni il nome della webcam se possibile
+                name = f"Camera {cam_id}"
+                try:
+                    name = cap.getBackendName() + f" ({cam_id})"
+                except:
+                    pass
+                available_cameras.append({"id": cam_id, "name": name})
             cap.release()
-            return ret
         return False
     
-    # Trova le webcam disponibili
-    available_cameras = []
-    for i in range(5):  # Testa le prime 5 webcam
-        if test_camera(i):
-            available_cameras.append(i)
+    # Testa le prime 5 webcam
+    for i in range(5):
+        test_camera(i)
     
-    frame = ttk.Frame(root, padding="10")
-    frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-    
-    ttk.Label(frame, text="Seleziona la webcam da usare:").grid(row=0, column=0, pady=5)
-    
-    for i, cam_id in enumerate(available_cameras):
-        ttk.Radiobutton(
-            frame, 
-            text=f"Webcam {cam_id}", 
-            variable=selected_camera, 
-            value=cam_id
-        ).grid(row=i+1, column=0, pady=2)
-    
-    def on_ok():
-        root.quit()
-        root.destroy()
-    
-    ttk.Button(frame, text="OK", command=on_ok).grid(row=len(available_cameras)+1, column=0, pady=10)
-    
-    root.mainloop()
-    return selected_camera.get()
+    return available_cameras
+
+def select_camera():
+    """Trova la prima webcam disponibile"""
+    cameras = get_available_cameras()
+    return cameras[0]["id"] if cameras else 0
 
 if __name__ == "__main__":
     camera_id = select_camera()
