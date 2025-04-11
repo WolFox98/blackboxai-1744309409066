@@ -8,7 +8,7 @@ import time
 
 class AntiDriftBridge:
     def __init__(self):
-        # Riceve dati da owoTracker sulla porta 6969
+        # Configurazione client e server OSC
         self.slimevr_client = udp_client.SimpleUDPClient("127.0.0.1", 9002)  # Invia a SlimeVR OSC router
         self.drift_threshold = 5.0
         self.filter_coefficient = 0.85
@@ -16,7 +16,7 @@ class AntiDriftBridge:
         self.reference_positions = {}
         self.is_calibrated = False
         print(f"Bridge inizializzato:")
-        print(f"- In ascolto su porta 6969 (owoTracker)")
+        print(f"- In ascolto su porta 12345 (owoTracker)")
         print(f"- Invio a SlimeVR OSC router su porta 9002")
 
     def handle_tracker_data(self, address, *args):
@@ -77,14 +77,14 @@ def main():
     dispatcher = dispatcher.Dispatcher()
     dispatcher.map("/tracker/*", bridge.handle_tracker_data)
     
-    # Avvia il server sulla porta 6969 per ricevere da owoTracker
-    server = osc_server.ThreadingOSCUDPServer(("0.0.0.0", 6969), dispatcher)
+    # Avvia il server sulla porta 12345 per ricevere da owoTracker
+    server = osc_server.ThreadingOSCUDPServer(("0.0.0.0", 12345), dispatcher)
     
     print("\nAnti-Drift Bridge avviato!")
     print("Configurazione:")
     print("1. In owoTracker:")
     print("   - Usa l'IP del tuo PC")
-    print("   - Usa la porta 6969")
+    print("   - Usa la porta 12345")
     print("2. In SlimeVR:")
     print("   - OSC router dovrebbe avere:")
     print("   - Input: 9002")
