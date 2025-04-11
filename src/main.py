@@ -23,6 +23,7 @@ def get_local_ip():
 
 def main():
     local_ip = get_local_ip()
+    OSC_PORT = 12345  # Porta più alta per evitare problemi di permessi
     
     print("SlimeVR Anti-Drift System")
     print("========================")
@@ -31,7 +32,7 @@ def main():
     print("----------------------------------------")
     print("\nConfigura owoTracker così:")
     print(f"- IP: {local_ip}")
-    print("- Porta: 6969")
+    print(f"- Porta: {OSC_PORT}")
     print("\nAvvio del sistema...")
 
     # Crea e avvia il bridge OSC in un thread separato
@@ -42,13 +43,13 @@ def main():
     disp.map("/tracker/*", bridge.handle_tracker_data)
     
     # Avvia il server OSC in un thread separato
-    server = osc_server.ThreadingOSCUDPServer(("0.0.0.0", 6969), disp)
+    server = osc_server.ThreadingOSCUDPServer(("0.0.0.0", OSC_PORT), disp)
     osc_thread = threading.Thread(target=server.serve_forever)
     osc_thread.daemon = True
     osc_thread.start()
     
-    print("\n✓ Bridge OSC avviato")
-    print("  - In ascolto sulla porta 6969")
+    print(f"\n✓ Bridge OSC avviato")
+    print(f"  - In ascolto sulla porta {OSC_PORT}")
     print("  - Invio a SlimeVR sulla porta 9002")
 
     # Avvia l'interfaccia web in un thread separato
@@ -60,9 +61,11 @@ def main():
     print("  - Disponibile su: http://localhost:9003")
     
     print("\nPassi da seguire:")
-    print(f"1. In owoTracker, inserisci questo IP: {local_ip} e porta: 6969")
+    print(f"1. In owoTracker, inserisci:")
+    print(f"   - IP: {local_ip}")
+    print(f"   - Porta: {OSC_PORT}")
     print("2. Assicurati che SlimeVR sia in esecuzione")
-    print("3. Apri l'interfaccia web nel tuo browser")
+    print("3. Apri http://localhost:9003 nel browser")
     print("4. Usa i controlli per regolare le impostazioni")
     print("\nPremi Ctrl+C per uscire")
 
